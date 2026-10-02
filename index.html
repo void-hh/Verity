@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verity 3D</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg-2: #111827;
+      --sidebar: #101a2d;
+      --sidebar-2: #16233c;
+      --panel: rgba(17, 24, 39, 0.95);
+      --panel-2: rgba(30, 41, 59, 0.95);
+      --primary: #6366f1;
+      --secondary: #ec4899;
+      --accent: #8b5cf6;
+      --text: #e5eefb;
+      --muted: #93a4c1;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: rgba(148, 163, 184, 0.18);
+      --shadow: rgba(0, 0, 0, 0.35);
+      --input: #121d33;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--bg), var(--bg-2));
+      color: var(--text);
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 14px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1400px;
+      height: calc(100vh - 28px);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      background: rgba(10, 18, 33, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 26px 55px var(--shadow);
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, var(--sidebar), var(--sidebar-2));
+      border-right: 1px solid var(--border);
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 10px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      box-shadow: 0 8px 12px rgba(99, 102, 241, 0.35);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: var(--border);
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.16), rgba(236, 72, 153, 0.18));
+      border-color: rgba(99, 102, 241, 0.35);
+      color: #fff;
+    }
+
+    .nav-btn .icon {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .sidebar-card {
+      margin-top: auto;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: rgba(11, 17, 31, 0.82);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px;
+      background: rgba(15, 23, 42, 0.6);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .title-wrap h2 {
+      margin: 0;
+      font-size: clamp(1.1rem, 1.4vw, 1.6rem);
+    }
+
+    .title-wrap small {
+      color: var(--muted);
+      display: block;
+      margin-top: 4px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .voice-btn, .clear-btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      border-radius: 10px;
+      cursor: pointer;
+      padding: 9px 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .voice-btn:hover, .clear-btn:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .content {
+      flex: 1;
+      padding: 18px;
+      overflow: auto;
+    }
+
+    .section {
+      display: none;
+      height: 100%;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .chat-shell {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 18px;
+      height: 100%;
+    }
+
+    .panel {
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 8px 18px var(--shadow);
+    }
+
+    .chat-panel {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .messages {
+      flex: 1;
+      min-height: 350px;
+      max-height: 63vh;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: rgba(11, 17, 31, 0.7);
+    }
+
+    .message {
+      max-width: 82%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      line-height: 1.55;
+      white-space: pre-line;
+      word-break: break-word;
+      animation: slideIn 0.25s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.bot {
+      align-self: flex-start;
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      border-left: 4px solid var(--secondary);
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: #334155;
+      border-right: 4px solid var(--secondary);
+    }
+
+    .message strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+      opacity: 0.95;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: rgba(15, 23, 42, 0.6);
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .toolbar label {
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .toolbar select {
+      background: var(--input);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 10px;
+      min-width: 180px;
+      font-size: 0.95rem;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      padding: 12px 16px 16px;
+      border-top: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .input-row input {
+      flex: 1;
+      background: var(--input);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 12px;
+      font-size: 1rem;
+    }
+
+    .input-row input::placeholder {
+      color: rgba(229, 238, 251, 0.5);
+    }
+
+    .input-row button {
+      border: none;
+      color: white;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      cursor: pointer;
+    }
+
+    .side-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .card {
+      padding: 16px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 8px 16px var(--shadow);
+    }
+
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(120px, 1fr));
+      gap: 8px;
+    }
+
+    .tool-btn {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 700;
+      padding: 12px 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .tool-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .summary-box {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 0.94rem;
+    }
+
+    .summary-box strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .memory-box, .search-box {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .memory-item {
+      background: rgba(99, 102, 241, 0.08);
+      border-left: 3px solid var(--primary);
+      border-radius: 8px;
+      padding: 9px 10px;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+    }
+
+    .memory-item small {
+      color: var(--muted);
+      display: block;
+      margin-top: 4px;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(140px, 1fr));
+      gap: 8px;
+    }
+
+    .category-btn {
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #dfe6ff;
+      border-radius: 10px;
+      padding: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .category-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
+    }
+
+    .search-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--input);
+      color: var(--text);
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    .search-results {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .search-result {
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(99, 102, 241, 0.08);
+      border-left: 2px solid var(--primary);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .search-result:hover {
+      background: rgba(99, 102, 241, 0.16);
+    }
+
+    @media (max-width: 980px) {
+      .app {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .chat-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .main {
+        min-height: 70vh;
+      }
+    }
+
+    @media (max-width: 560px) {
+      body { padding: 8px; }
+      .topbar { padding: 12px 14px; }
+      .content { padding: 12px; }
+      .tool-grid, .category-grid { grid-template-columns: 1fr; }
+      .input-row { flex-direction: column; }
+      .input-row button { width: 100%; }
+      .sidebar { padding: 12px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">🚀</div>
+        <div>
+          <h1>Verity 3D</h1>
+          <small>IA Avançada</small>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-btn active" data-target="chat">
+          <span class="icon">💬</span>
+          <span>Chat</span>
+        </button>
+        <button class="nav-btn" data-target="memory">
+          <span class="icon">📝</span>
+          <span>Memória</span>
+        </button>
+        <button class="nav-btn" data-target="categories">
+          <span class="icon">📂</span>
+          <span>Categorias</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-card">
+        <strong>Informações</strong><br>
+        Especialista em: warping, aderência, temperatura, velocidade, suporte, calibração e produção 3D.
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="title-wrap">
+          <h2>Assistente Verity 3D</h2>
+          <small>IA para impressão 3D</small>
+        </div>
+        <div class="top-actions">
+          <button id="voiceBtn" class="voice-btn">🎤 Voz</button>
+          <button id="clearMemoryBtn" class="clear-btn">🗑️ Limpar</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <section id="chatSection" class="section active">
+          <div class="chat-shell">
+            <div class="panel chat-panel">
+              <div id="messages" class="messages"></div>
+
+              <div class="toolbar">
+                <label for="modeSelect">Modo:</label>
+                <select id="modeSelect">
+                  <option value="rapido">⚡ Rápido</option>
+                  <option value="inteligencia">🧠 Inteligência</option>
+                  <option value="pesquisa">🔍 Pesquisa</option>
+                </select>
+              </div>
+
+              <div class="input-row">
+                <input id="questionInput" type="text" placeholder="Pergunte sobre impressão 3D..." />
+                <button id="sendBtn">Enviar</button>
+              </div>
+            </div>
+
+            <div class="side-stack">
+              <div class="card">
+                <h3>Comandos rápidos</h3>
+                <div class="tool-grid">
+                  <button class="tool-btn" data-cmd="analisar_modelo">📊 Analisar</button>
+                  <button class="tool-btn" data-cmd="otimizar_para_impressao">⚙️ Otimizar</button>
+                  <button class="tool-btn" data-cmd="gerar_suportes">🎯 Suportes</button>
+                  <button class="tool-btn" data-cmd="estimar_tempo">⏱️ Tempo</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3>Resumo</h3>
+                <div class="summary-box">
+                  <strong>Verity 3D</strong>
+                  Resolve problemas de fila de impressão, aderência da mesa, warping, suporte, temperatura, velocidade, qualidade e calibração.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="memorySection" class="section">
+          <div class="card" style="height: 100%;">
+            <h3>📝 Histórico de Conversas</h3>
+            <div id="memoryList" class="memory-box"></div>
+          </div>
+        </section>
+
+        <section id="categoriesSection" class="section">
+          <div class="chat-shell">
+            <div class="card">
+              <h3>📂 Categorias</h3>
+              <div class="category-grid">
+                <button class="category-btn" data-category="warping">Warping</button>
+                <button class="category-btn" data-category="aderencia">Aderência</button>
+                <button class="category-btn" data-category="suporte">Suportes</button>
+                <button class="category-btn" data-category="temperatura">Temperatura</button>
+                <button class="category-btn" data-category="velocidade">Velocidade</button>
+                <button class="category-btn" data-category="filamento">Filamentos</button>
+                <button class="category-btn" data-category="qualidade">Qualidade</button>
+                <button class="category-btn" data-category="calibracao">Calibração</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>🔍 Busca rápida</h3>
+              <input id="searchInput" class="search-input" type="text" placeholder="Digite um tema..." />
+              <div id="searchResults" class="search-results"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const messagesEl = document.getElementById("messages");
+    const questionInput = document.getElementById("questionInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const modeSelect = document.getElementById("modeSelect");
+    const voiceBtn = document.getElementById("voiceBtn");
+    const clearMemoryBtn = document.getElementById("clearMemoryBtn");
+    const memoryList = document.getElementById("memoryList");
+    const searchInput = document.getElementById("searchInput");
+    const searchResults = document.getElementById("searchResults");
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const sections = document.querySelectorAll(".section");
+    const categoryButtons = document.querySelectorAll(".category-btn");
+    const toolButtons = document.querySelectorAll(".tool-btn");
+
+    const memoryKey = "verity3d_memory";
+
+    const knowledgeBase = {
+      warping: {
+        keywords: ["warping", "empenamento", "empenar", "borda torcida"],
+        answer: "WARPING / EMPENAMENTO\n\nO que é: as bordas da peça ficam levantadas.\n\nCausas:\n- Mesa fria\n- Ventilação excessiva\n- Temperatura desequilibrada\n- Falta de aderência\n\nSoluções:\n- Aqueça a mesa em PLA: 50-60°C\n- Reduza ventilação nas primeiras camadas\n- Use brim ou raft\n- Nivele a mesa\n- Aumente a aderência com cola ou filme\n\nDica: desligue a ventoinha nas primeiras camadas para reduzir empenamento."
+      },
+      aderencia: {
+        keywords: ["aderência", "aderencia", "adesão", "nao cola", "não colando", "descola"],
+        answer: "ADERÊNCIA DA PRIMEIRA CAMADA\n\nProblemas comuns:\n- Mesa desregulada\n- Mesa suja\n- Temperatura inadequada\n- Velocidade alta\n\nChecklist:\n- Nivele a mesa\n- Limpe bem a superfície\n- Reduza velocidade da primeira camada para 15-25 mm/s\n- Aumente 5°C a mesa\n- Use brim, cola ou PEI se necessário\n\nPLA: 50-60°C na mesa. ABS: 80-100°C."
+      },
+      suporte: {
+        keywords: ["suporte", "suportes", "preciso de suporte"],
+        answer: "SUPORTES\n\nUse suporte quando houver:\n- Peças com saliências\n- Angulos acima de 45°\n- Detalhes pendurados\n\nDicas:\n- Use suporte apenas onde necessário\n- Ajuste densidade para 10-20%\n- Deixe espaçamento adequado\n- Oriente o modelo para reduzir suporte\n\nFerramentas: Cura, PrusaSlicer e SuperSlicer fazem isso automaticamente."
+      },
+      temperatura: {
+        keywords: ["temperatura", "quente", "frio", "mesa", "bico"],
+        answer: "TEMPERATURA\n\nPLA: 200-210°C no bico, 50-60°C na mesa\nABS: 230-250°C no bico, 80-100°C na mesa\nPETG: 230-250°C no bico, 70-80°C na mesa\nTPU: 210-230°C no bico, 20-40°C na mesa\n\nSe a peça está frágil, aumente 5°C.\nSe está derretendo ou com excesso de fios, reduza 5°C."
+      },
+      velocidade: {
+        keywords: ["velocidade", "mm/s", "rapido", "lento"],
+        answer: "VELOCIDADE\n\nPrimeira camada: 15-25 mm/s\nContorno: 30-50 mm/s\nInfill: 60-100 mm/s\n\nSe houver falhas ou camada fraca, reduza velocidade.\nSe a peça está boa, você pode aumentar devagar em pequenos passos."
+      },
+      filamento: {
+        keywords: ["filamento", "pla", "abs", "petg", "tpu", "material"],
+        answer: "FILAMENTOS\n\nPLA: Fácil de usar, bom para iniciantes\nABS: mais resistente, mas mais difícil\nPETG: bom equilíbrio entre resistência e facilidade\nTPU: flexível e elástico\n\nRecomendação: para começar, PLA é o melhor."
+      },
+      qualidade: {
+        keywords: ["qualidade", "feio", "ruim", "acabamento"],
+        answer: "QUALIDADE\n\nProblemas comuns:\n- Strings: reduza temperatura e aumente retração\n- Fios: ajuste retração\n- Buracos: aumente infill\n- Superfície áspera: reduza velocidade\n- Delaminação: aumente temperatura e reduza ventilação\n\nUse camada de 0.2mm para equilíbrio entre qualidade e velocidade."
+      },
+      calibracao: {
+        keywords: ["calibração", "calibracao", "calibrar", "nive"],
+        answer: "CALIBRAÇÃO\n\nChecklist importante:\n- Nível da mesa\n- Altura Z correta\n- Extrusão consistente\n- Temperatura ideal\n- Teste da primeira camada\n\nFaça uma calibragem simples: teste da primeira camada, leve pressão do papel e ajuste Z."
+      }
+    };
+
+    const memoryLimit = 50;
+
+    function loadMemory() {
+      const raw = localStorage.getItem(memoryKey);
+      if (!raw) return [];
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return [];
+      }
+    }
+
+    function saveMemory(list) {
+      localStorage.setItem(memoryKey, JSON.stringify(list));
+    }
+
+    function updateMemoryDisplay() {
+      const memories = loadMemory();
+      if (!memories.length) {
+        memoryList.innerHTML = '<div class="memory-item"><strong>Nenhuma conversa ainda.</strong><small>Faça sua primeira pergunta.</small></div>';
+        return;
+      }
+
+      memoryList.innerHTML = memories.slice(-12).reverse().map(item => {
+        const question = item.question.length > 70 ? item.question.slice(0, 70) + '...' : item.question;
+        return `
+          <div class="memory-item">
+            <strong>${item.mode}</strong><br>
+            ${question}<br>
+            <small>${new Date(item.time).toLocaleString('pt-BR')}</small>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function addMessage(text, sender = 'bot') {
+      const div = document.createElement('div');
+      div.className = `message ${sender}`;
+      div.innerHTML = `<strong>${sender === 'bot' ? 'Verity 3D:' : 'Você:'}</strong><p>${text}</p>`;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function getKnowledgeAnswer(question) {
+      const q = question.toLowerCase();
+      for (const [key, value] of Object.entries(knowledgeBase)) {
+        const found = value.keywords.some(keyword => q.includes(keyword.toLowerCase()));
+        if (found) return value.answer;
+      }
+      return null;
+    }
+
+    function answerRapido(question) {
+      const hit = getKnowledgeAnswer(question);
+      if (hit) return `⚡ RESPOSTA RÁPIDA\n\n${hit}`;
+      return `⚡ RESPOSTA RÁPIDA\n\nSua pergunta parece estar relacionada a impressão 3D. Recomendo verificar:\n- temperatura da mesa e do bico\n- nível da mesa\n- velocidade da primeira camada\n- aderência do material\n\nSe o problema for persistente, reduza velocidade e teste em peça pequena.`;
+    }
+
+    function answerInteligencia(question) {
+      const hit = getKnowledgeAnswer(question);
+      if (hit) return `🧠 INTELIGÊNCIA\n\nPergunta: ${question}\n\n${hit}`;
+      return `🧠 INTELIGÊNCIA\n\nPergunta: ${question}\n\nA melhor abordagem é: verificar primeiro a aderência da primeira camada, depois temperatura e velocidade. Misturas de temperatura e ventoinha costumam causar muitos problemas.`;
+    }
+
+    function answerPesquisa(question) {
+      const hit = getKnowledgeAnswer(question);
+      if (hit) return `🔍 PESQUISA\n\nPergunta: ${question}\n\n${hit}`;
+      return `🔍 PESQUISA\n\nSua pergunta parece de impressão 3D. Tópicos úteis:\n- Temperatura\n- Velocidade\n- Aderência\n- Warping\n- Calibração\n\nUse as categorias para aprofundar.`;
+    }
+
+    function getBotResponse(question, mode) {
+      if (mode === 'inteligencia') return answerInteligencia(question);
+      if (mode === 'pesquisa') return answerPesquisa(question);
+      return answerRapido(question);
+    }
+
+    function saveEntry(question, answer, mode) {
+      const list = loadMemory();
+      list.push({ question, answer, mode, time: Date.now() });
+      if (list.length > memoryLimit) list.splice(0, list.length - memoryLimit);
+      saveMemory(list);
+      updateMemoryDisplay();
+    }
+
+    function sendQuestion() {
+      const question = questionInput.value.trim();
+      if (!question) return;
+
+      addMessage(question, 'user');
+      questionInput.value = '';
+
+      const mode = modeSelect.value;
+      const answer = getBotResponse(question, mode);
+
+      setTimeout(() => {
+        addMessage(answer, 'bot');
+        saveEntry(question, answer, mode);
+      }, 200);
+    }
+
+    function clearMemory() {
+      if (!confirm('Deseja limpar o histórico de conversas?')) return;
+      localStorage.removeItem(memoryKey);
+      updateMemoryDisplay();
+    }
+
+    function runQuickCommand(cmd) {
+      const map = {
+        analisar_modelo: {
+          status: 'Analisado',
+          warnings: ['Verificar espessura da parede', 'Checar saliências', 'Validar aderência'],
+          suggestion: 'Ajuste a orientação antes de imprimir'
+        },
+        otimizar_para_impressao: {
+          status: 'Otimizado',
+          material: 'PLA',
+          settings: ['Temp Bico: 205°C', 'Temp Mesa: 60°C', 'Camada: 0.2mm']
+        },
+        gerar_suportes: {
+          status: 'Suportes gerados',
+          density: '15%',
+          note: 'Verifique a remoção sem danificar a peça'
+        },
+        estimar_tempo: {
+          status: 'Tempo estimado',
+          hours: 4.2,
+          minutes: 252,
+          confidence: 'média'
+        }
+      };
+
+      if (!map[cmd]) return 'Comando não reconhecido.';
+      return JSON.stringify(map[cmd], null, 2);
+    }
+
+    function switchSection(target) {
+      navButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.target === target));
+      sections.forEach(sec => sec.classList.toggle('active', sec.id === `${target}Section`));
+    }
+
+    function showCategory(category) {
+      const data = knowledgeBase[category];
+      if (!data) return;
+      addMessage(`${data.answer}`, 'bot');
+      saveEntry(`Categoria: ${category}`, data.answer, 'categoria');
+    }
+
+    function renderSearchResults(query) {
+      if (!query) {
+        searchResults.innerHTML = '';
+        return;
+      }
+
+      const items = Object.keys(knowledgeBase)
+        .filter(key => key.toLowerCase().includes(query.toLowerCase()) || knowledgeBase[key].keywords.some(k => k.toLowerCase().includes(query.toLowerCase())))
+        .slice(0, 6);
+
+      if (!items.length) {
+        searchResults.innerHTML = '<div class="search-result">Nenhum resultado encontrado.</div>';
+        return;
+      }
+
+      searchResults.innerHTML = items.map(item => `
+        <div class="search-result" data-key="${item}">${item.toUpperCase()}</div>
+      `).join('');
+
+      searchResults.querySelectorAll('.search-result').forEach(el => {
+        el.addEventListener('click', () => {
+          const key = el.dataset.key;
+          showCategory(key);
+        });
+      });
+    }
+
+    function startWelcome() {
+      const msg = [
+        'Olá! 👋 Sou a Verity 3D.',
+        'Posso ajudar com impressão 3D, aderência, temperatura, suporte, velocidade, qualidade, warping e calibração.',
+        '',
+        'Escolha um modo e faça sua pergunta.',
+        'Você também pode usar a aba Categorias para explorar temas ou clicar no botão Voz para falar.'
+      ].join('\n');
+      addMessage(msg, 'bot');
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => switchSection(btn.dataset.target));
+    });
+
+    categoryButtons.forEach(btn => {
+      btn.addEventListener('click', () => showCategory(btn.dataset.category));
+    });
+
+    toolButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const result = runQuickCommand(btn.dataset.cmd);
+        addMessage(result, 'bot');
+        saveEntry(`Comando: ${btn.dataset.cmd}`, result, 'automacao');
+      });
+    });
+
+    sendBtn.addEventListener('click', sendQuestion);
+    questionInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') sendQuestion();
+    });
+
+    searchInput.addEventListener('input', e => renderSearchResults(e.target.value.trim()));
+    clearMemoryBtn.addEventListener('click', clearMemory);
+
+    voiceBtn.addEventListener('click', () => {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('Seu navegador não suporta reconhecimento de voz.');
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'pt-BR';
+      recognition.start();
+      voiceBtn.textContent = '🎤 Ouvindo...';
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        questionInput.value = transcript;
+        voiceBtn.textContent = '🎤 Voz';
+        sendQuestion();
+      };
+
+      recognition.onerror = () => {
+        voiceBtn.textContent = '🎤 Voz';
+        alert('Não foi possível captar sua voz. Tente novamente.');
+      };
+    });
+
+    updateMemoryDisplay();
+    startWelcome();
+  </script>
+</body>
+</html>
