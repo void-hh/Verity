@@ -3,54 +3,153 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verity 3D - IA para Impressão 3D</title>
+  <title>Verity 3D</title>
   <style>
     :root {
-      --bg-1: #0f172a;
+      --bg: #0b1020;
       --bg-2: #111827;
-      --panel: rgba(17, 24, 39, 0.9);
+      --sidebar: #101a2d;
+      --sidebar-2: #16233c;
+      --panel: rgba(17, 24, 39, 0.95);
       --panel-2: rgba(30, 41, 59, 0.95);
       --primary: #6366f1;
       --secondary: #ec4899;
       --accent: #8b5cf6;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --good: #22c55e;
+      --text: #e5eefb;
+      --muted: #93a4c1;
+      --success: #22c55e;
       --warning: #f59e0b;
       --danger: #ef4444;
-      --border: rgba(148, 163, 184, 0.25);
+      --border: rgba(148, 163, 184, 0.18);
       --shadow: rgba(0, 0, 0, 0.35);
+      --input: #121d33;
     }
 
     * { box-sizing: border-box; }
 
     html, body {
       margin: 0;
-      height: 100%;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      min-height: 100%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--bg), var(--bg-2));
       color: var(--text);
     }
 
     body {
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
       min-height: 100vh;
-      padding: 12px;
+      padding: 14px;
     }
 
     .app {
       width: 100%;
       max-width: 1400px;
-      min-height: 95vh;
+      height: calc(100vh - 28px);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      background: rgba(10, 18, 33, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 26px 55px var(--shadow);
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, var(--sidebar), var(--sidebar-2));
+      border-right: 1px solid var(--border);
+      padding: 18px 14px;
       display: flex;
       flex-direction: column;
-      border-radius: 20px;
-      background: rgba(15, 23, 42, 0.92);
+      gap: 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 10px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      box-shadow: 0 8px 12px rgba(99, 102, 241, 0.35);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: var(--border);
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.16), rgba(236, 72, 153, 0.18));
+      border-color: rgba(99, 102, 241, 0.35);
+      color: #fff;
+    }
+
+    .nav-btn .icon {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .sidebar-card {
+      margin-top: auto;
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
-      box-shadow: 0 20px 40px var(--shadow);
-      overflow: hidden;
+      border-radius: 14px;
+      padding: 12px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: rgba(11, 17, 31, 0.82);
     }
 
     .topbar {
@@ -59,151 +158,103 @@
       justify-content: space-between;
       gap: 12px;
       padding: 16px 20px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex: 1;
-    }
-
-    .brand-icon {
-      font-size: 2rem;
-      filter: drop-shadow(0 3px 8px rgba(0,0,0,0.18));
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: clamp(1.3rem, 2vw, 2.2rem);
-      line-height: 1.1;
-      font-weight: 700;
-    }
-
-    .brand small {
-      display: block;
-      opacity: 0.85;
-      font-size: 0.75rem;
-    }
-
-    .controls {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .voice-btn {
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: white;
-      border-radius: 8px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.2s ease;
-    }
-
-    .voice-btn:hover {
-      background: rgba(255,255,255,0.25);
-    }
-
-    .tabs {
-      display: flex;
-      gap: 2px;
-      padding: 0 20px;
-      background: rgba(15, 23, 42, 0.5);
+      background: rgba(15, 23, 42, 0.6);
       border-bottom: 1px solid var(--border);
-      overflow-x: auto;
     }
 
-    .tab-btn {
-      padding: 12px 16px;
-      background: transparent;
-      border: none;
+    .title-wrap h2 {
+      margin: 0;
+      font-size: clamp(1.1rem, 1.4vw, 1.6rem);
+    }
+
+    .title-wrap small {
       color: var(--muted);
-      cursor: pointer;
-      font-weight: 600;
-      border-bottom: 3px solid transparent;
-      transition: all 0.2s ease;
-      white-space: nowrap;
+      display: block;
+      margin-top: 4px;
     }
 
-    .tab-btn.active {
-      color: var(--primary);
-      border-bottom-color: var(--primary);
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .tab-btn:hover {
+    .voice-btn, .clear-btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
       color: var(--text);
+      border-radius: 10px;
+      cursor: pointer;
+      padding: 9px 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .voice-btn:hover, .clear-btn:hover {
+      background: rgba(255,255,255,0.06);
     }
 
     .content {
-      display: grid;
-      grid-template-columns: 1.8fr 1fr;
-      gap: 16px;
       flex: 1;
-      padding: 16px;
-      min-height: 0;
-      overflow: hidden;
+      padding: 18px;
+      overflow: auto;
     }
 
-    .tab-content {
+    .section {
       display: none;
+      height: 100%;
     }
 
-    .tab-content.active {
-      display: contents;
+    .section.active {
+      display: block;
+    }
+
+    .chat-shell {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 18px;
+      height: 100%;
     }
 
     .panel {
-      background: var(--panel);
+      background: rgba(17, 24, 39, 0.9);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 8px 16px var(--shadow);
+      box-shadow: 0 8px 18px var(--shadow);
     }
 
     .chat-panel {
       display: flex;
       flex-direction: column;
       min-height: 0;
-      grid-column: 1;
-      grid-row: 1;
     }
 
     .messages {
       flex: 1;
-      min-height: 320px;
-      max-height: 58vh;
+      min-height: 350px;
+      max-height: 63vh;
       overflow-y: auto;
       padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      background: rgba(15, 23, 42, 0.5);
+      background: rgba(11, 17, 31, 0.7);
     }
 
     .message {
-      max-width: 85%;
-      padding: 12px 15px;
+      max-width: 82%;
+      padding: 12px 14px;
       border-radius: 14px;
-      line-height: 1.5;
-      word-break: break-word;
+      line-height: 1.55;
       white-space: pre-line;
-      animation: slideIn 0.3s ease;
+      word-break: break-word;
+      animation: slideIn 0.25s ease;
     }
 
     @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .message.bot {
@@ -221,25 +272,8 @@
     .message strong {
       display: block;
       margin-bottom: 6px;
-      font-size: 0.8rem;
-      opacity: 0.9;
-    }
-
-    .memory-display {
-      padding: 16px;
-      background: rgba(15, 23, 42, 0.5);
-      border-top: 1px solid var(--border);
-      max-height: 200px;
-      overflow-y: auto;
-      font-size: 0.9rem;
-    }
-
-    .memory-item {
-      padding: 8px;
-      margin: 4px 0;
-      background: rgba(99, 102, 241, 0.1);
-      border-left: 2px solid var(--primary);
-      border-radius: 4px;
+      font-size: 0.78rem;
+      opacity: 0.95;
     }
 
     .toolbar {
@@ -247,8 +281,8 @@
       align-items: center;
       gap: 10px;
       padding: 12px 16px;
+      background: rgba(15, 23, 42, 0.6);
       border-top: 1px solid var(--border);
-      background: rgba(15, 23, 42, 0.45);
       flex-wrap: wrap;
     }
 
@@ -259,14 +293,13 @@
     }
 
     .toolbar select {
-      background: var(--bg-1);
+      background: var(--input);
       color: var(--text);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 8px 10px;
+      padding: 9px 10px;
+      min-width: 180px;
       font-size: 0.95rem;
-      flex: 1;
-      min-width: 140px;
     }
 
     .input-row {
@@ -274,106 +307,72 @@
       gap: 10px;
       padding: 12px 16px 16px;
       border-top: 1px solid var(--border);
-      background: rgba(15, 23, 42, 0.45);
+      background: rgba(15, 23, 42, 0.6);
     }
 
     .input-row input {
       flex: 1;
-      background: var(--bg-1);
+      background: var(--input);
       color: var(--text);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 11px 13px;
+      padding: 11px 12px;
       font-size: 1rem;
     }
 
     .input-row input::placeholder {
-      color: rgba(226, 232, 240, 0.5);
+      color: rgba(229, 238, 251, 0.5);
     }
 
     .input-row button {
       border: none;
-      border-radius: 10px;
-      padding: 11px 16px;
-      font-weight: 600;
       color: white;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-weight: 700;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       cursor: pointer;
-      transition: transform 0.2s ease, filter 0.2s ease;
     }
 
-    .input-row button:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.05);
-    }
-
-    .side-panel {
+    .side-stack {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 18px;
       min-height: 0;
-      grid-column: 2;
-      grid-row: 1;
-      overflow-y: auto;
     }
 
-    .tools, .summary, .search-panel {
+    .card {
+      padding: 16px;
       background: var(--panel-2);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 16px;
       box-shadow: 0 8px 16px var(--shadow);
     }
 
-    .tools h2, .summary h2, .search-panel h2 {
-      margin: 0 0 12px 0;
-      font-size: 1.05rem;
-      font-weight: 700;
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 1rem;
     }
 
     .tool-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(110px, 1fr));
+      grid-template-columns: repeat(2, minmax(120px, 1fr));
       gap: 8px;
     }
 
     .tool-btn {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
       border: none;
       border-radius: 10px;
-      padding: 12px 8px;
-      font-weight: 600;
-      font-size: 0.85rem;
       color: white;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
+      font-weight: 700;
+      padding: 12px 8px;
       cursor: pointer;
-      transition: transform 0.2s ease, opacity 0.2s ease;
+      transition: transform 0.2s ease;
     }
 
     .tool-btn:hover {
       transform: translateY(-2px);
-      opacity: 0.95;
-    }
-
-    .category-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .category-btn {
-      background: rgba(99, 102, 241, 0.1);
-      border: 1px solid var(--primary);
-      color: var(--primary);
-      padding: 10px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: all 0.2s ease;
-    }
-
-    .category-btn:hover {
-      background: rgba(99, 102, 241, 0.2);
     }
 
     .summary-box {
@@ -381,236 +380,245 @@
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 12px;
-      font-size: 0.92rem;
       color: var(--text);
       line-height: 1.6;
+      font-size: 0.94rem;
     }
 
     .summary-box strong {
-      color: #fff;
       display: block;
       margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .memory-box, .search-box {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .memory-item {
+      background: rgba(99, 102, 241, 0.08);
+      border-left: 3px solid var(--primary);
+      border-radius: 8px;
+      padding: 9px 10px;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+    }
+
+    .memory-item small {
+      color: var(--muted);
+      display: block;
+      margin-top: 4px;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(140px, 1fr));
+      gap: 8px;
+    }
+
+    .category-btn {
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #dfe6ff;
+      border-radius: 10px;
+      padding: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .category-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
     }
 
     .search-input {
       width: 100%;
-      padding: 10px 12px;
-      background: var(--bg-1);
-      color: var(--text);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 10px;
+      background: var(--input);
+      color: var(--text);
+      padding: 10px 12px;
       margin-bottom: 10px;
       font-size: 0.95rem;
     }
 
     .search-results {
-      max-height: 200px;
-      overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
     }
 
     .search-result {
       padding: 10px;
+      border-radius: 8px;
       background: rgba(99, 102, 241, 0.08);
-      border-left: 3px solid var(--primary);
-      border-radius: 6px;
+      border-left: 2px solid var(--primary);
       cursor: pointer;
-      transition: all 0.2s ease;
       font-size: 0.9rem;
+      transition: all 0.2s ease;
     }
 
     .search-result:hover {
-      background: rgba(99, 102, 241, 0.15);
+      background: rgba(99, 102, 241, 0.16);
     }
 
-    .footer {
-      padding: 10px 16px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.8rem;
-      border-top: 1px solid var(--border);
-    }
+    @media (max-width: 980px) {
+      .app {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
 
-    @media (max-width: 1000px) {
-      .content {
+      .sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .chat-shell {
         grid-template-columns: 1fr;
       }
 
-      .chat-panel {
-        grid-column: 1;
-      }
-
-      .side-panel {
-        grid-column: 1;
-      }
-
-      .messages {
-        max-height: 45vh;
+      .main {
+        min-height: 70vh;
       }
     }
 
     @media (max-width: 560px) {
-      .topbar {
-        padding: 14px;
-        flex-wrap: wrap;
-      }
-
-      .brand h1 {
-        font-size: 1.2rem;
-      }
-
-      .controls {
-        width: 100%;
-        order: 3;
-        margin-top: 8px;
-      }
-
-      .tool-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .input-row {
-        flex-direction: column;
-      }
-
-      .input-row button {
-        width: 100%;
-      }
-
-      .tabs {
-        padding: 0 10px;
-      }
-
-      .tab-btn {
-        padding: 10px 12px;
-        font-size: 0.85rem;
-      }
+      body { padding: 8px; }
+      .topbar { padding: 12px 14px; }
+      .content { padding: 12px; }
+      .tool-grid, .category-grid { grid-template-columns: 1fr; }
+      .input-row { flex-direction: column; }
+      .input-row button { width: 100%; }
+      .sidebar { padding: 12px 10px; }
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <header class="topbar">
+    <aside class="sidebar">
       <div class="brand">
-        <span class="brand-icon">🚀</span>
+        <div class="brand-icon">🚀</div>
         <div>
           <h1>Verity 3D</h1>
-          <small>IA Avançada para Impressão 3D</small>
+          <small>IA Avançada</small>
         </div>
       </div>
-      <div class="controls">
-        <button class="voice-btn" id="voiceBtn" title="Ativar reconhecimento de voz">🎤 Voz</button>
+
+      <nav class="nav">
+        <button class="nav-btn active" data-target="chat">
+          <span class="icon">💬</span>
+          <span>Chat</span>
+        </button>
+        <button class="nav-btn" data-target="memory">
+          <span class="icon">📝</span>
+          <span>Memória</span>
+        </button>
+        <button class="nav-btn" data-target="categories">
+          <span class="icon">📂</span>
+          <span>Categorias</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-card">
+        <strong>Informações</strong><br>
+        Especialista em: warping, aderência, temperatura, velocidade, suporte, calibração e produção 3D.
       </div>
-    </header>
+    </aside>
 
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="chat">💬 Chat</button>
-      <button class="tab-btn" data-tab="memory">📝 Memória</button>
-      <button class="tab-btn" data-tab="categories">📂 Categorias</button>
-    </div>
+    <main class="main">
+      <header class="topbar">
+        <div class="title-wrap">
+          <h2>Assistente Verity 3D</h2>
+          <small>IA para impressão 3D</small>
+        </div>
+        <div class="top-actions">
+          <button id="voiceBtn" class="voice-btn">🎤 Voz</button>
+          <button id="clearMemoryBtn" class="clear-btn">🗑️ Limpar</button>
+        </div>
+      </header>
 
-    <div class="content">
-      <!-- TAB CHAT -->
-      <div class="tab-content active" data-tab="chat">
-        <section class="panel chat-panel">
-          <div id="messages" class="messages"></div>
+      <div class="content">
+        <section id="chatSection" class="section active">
+          <div class="chat-shell">
+            <div class="panel chat-panel">
+              <div id="messages" class="messages"></div>
 
-          <div class="toolbar">
-            <label for="modeSelect">Modo:</label>
-            <select id="modeSelect">
-              <option value="rapido">⚡ Rápido</option>
-              <option value="inteligencia">🧠 Inteligência</option>
-              <option value="pesquisa">🔍 Pesquisa</option>
-            </select>
-          </div>
+              <div class="toolbar">
+                <label for="modeSelect">Modo:</label>
+                <select id="modeSelect">
+                  <option value="rapido">⚡ Rápido</option>
+                  <option value="inteligencia">🧠 Inteligência</option>
+                  <option value="pesquisa">🔍 Pesquisa</option>
+                </select>
+              </div>
 
-          <div class="input-row">
-            <input id="questionInput" type="text" placeholder="Digite sua pergunta sobre impressão 3D..." />
-            <button id="sendBtn">Enviar</button>
-          </div>
-        </section>
-
-        <aside class="side-panel">
-          <div class="tools panel">
-            <h2>Comandos rápidos</h2>
-            <div class="tool-grid">
-              <button class="tool-btn" data-cmd="analisar_modelo">📊 Analisar</button>
-              <button class="tool-btn" data-cmd="otimizar_para_impressao">⚙️ Otimizar</button>
-              <button class="tool-btn" data-cmd="gerar_suportes">🎯 Suportes</button>
-              <button class="tool-btn" data-cmd="estimar_tempo">⏱️ Tempo</button>
+              <div class="input-row">
+                <input id="questionInput" type="text" placeholder="Pergunte sobre impressão 3D..." />
+                <button id="sendBtn">Enviar</button>
+              </div>
             </div>
-          </div>
 
-          <div class="summary">
-            <h2>Sobre a IA</h2>
-            <div class="summary-box">
-              <strong>Verity 3D v2.0</strong>
-              Assistente inteligente com:
-              <br>✓ Memória de conversa
-              <br>✓ 3 modos de resposta
-              <br>✓ Base de dados 3D
-              <br>✓ Reconhecimento de voz
-              <br>✓ Busca contextualizada
-            </div>
-          </div>
-        </aside>
-      </div>
+            <div class="side-stack">
+              <div class="card">
+                <h3>Comandos rápidos</h3>
+                <div class="tool-grid">
+                  <button class="tool-btn" data-cmd="analisar_modelo">📊 Analisar</button>
+                  <button class="tool-btn" data-cmd="otimizar_para_impressao">⚙️ Otimizar</button>
+                  <button class="tool-btn" data-cmd="gerar_suportes">🎯 Suportes</button>
+                  <button class="tool-btn" data-cmd="estimar_tempo">⏱️ Tempo</button>
+                </div>
+              </div>
 
-      <!-- TAB MEMORY -->
-      <div class="tab-content" data-tab="memory">
-        <section class="panel" style="grid-column: 1; grid-row: 1;">
-          <div style="padding: 16px;">
-            <h2 style="margin-top: 0;">📝 Histórico de Conversas</h2>
-            <div id="memoryList" class="memory-display">
-              <p style="color: var(--muted);">Nenhuma conversa registrada ainda.</p>
-            </div>
-            <button style="width: 100%; margin-top: 10px; padding: 10px; background: linear-gradient(135deg, var(--danger), #c2185b); border: none; color: white; border-radius: 8px; cursor: pointer; font-weight: 600;" onclick="clearMemory()">🗑️ Limpar Memória</button>
-          </div>
-        </section>
-
-        <aside class="side-panel">
-          <div class="summary">
-            <h2>Informações</h2>
-            <div class="summary-box">
-              A memória armazena suas últimas conversas localmente no navegador. Útil para revisar discussões anteriores.
-              <br><br>
-              <small>Máximo: 50 conversas</small>
-            </div>
-          </div>
-        </aside>
-      </div>
-
-      <!-- TAB CATEGORIES -->
-      <div class="tab-content" data-tab="categories">
-        <section class="panel" style="grid-column: 1; grid-row: 1;">
-          <div style="padding: 16px;">
-            <h2 style="margin-top: 0;">📂 Categorias</h2>
-            <div class="category-list">
-              <button class="category-btn" onclick="loadCategory('warping')">Warping / Empenamento</button>
-              <button class="category-btn" onclick="loadCategory('aderencia')">Aderência da Base</button>
-              <button class="category-btn" onclick="loadCategory('suporte')">Suportes</button>
-              <button class="category-btn" onclick="loadCategory('temperatura')">Temperatura</button>
-              <button class="category-btn" onclick="loadCategory('velocidade')">Velocidade</button>
-              <button class="category-btn" onclick="loadCategory('filamento')">Filamentos</button>
-              <button class="category-btn" onclick="loadCategory('qualidade')">Qualidade</button>
-              <button class="category-btn" onclick="loadCategory('calibracao')">Calibração</button>
+              <div class="card">
+                <h3>Resumo</h3>
+                <div class="summary-box">
+                  <strong>Verity 3D</strong>
+                  Resolve problemas de fila de impressão, aderência da mesa, warping, suporte, temperatura, velocidade, qualidade e calibração.
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <aside class="side-panel">
-          <div class="search-panel">
-            <h2>🔍 Busca Rápida</h2>
-            <input class="search-input" id="searchInput" type="text" placeholder="Buscar...">
-            <div id="searchResults" class="search-results"></div>
+        <section id="memorySection" class="section">
+          <div class="card" style="height: 100%;">
+            <h3>📝 Histórico de Conversas</h3>
+            <div id="memoryList" class="memory-box"></div>
           </div>
-        </aside>
-      </div>
-    </div>
+        </section>
 
-    <div class="footer">Verity 3D © 2025 · IA Avançada para Impressão 3D</div>
+        <section id="categoriesSection" class="section">
+          <div class="chat-shell">
+            <div class="card">
+              <h3>📂 Categorias</h3>
+              <div class="category-grid">
+                <button class="category-btn" data-category="warping">Warping</button>
+                <button class="category-btn" data-category="aderencia">Aderência</button>
+                <button class="category-btn" data-category="suporte">Suportes</button>
+                <button class="category-btn" data-category="temperatura">Temperatura</button>
+                <button class="category-btn" data-category="velocidade">Velocidade</button>
+                <button class="category-btn" data-category="filamento">Filamentos</button>
+                <button class="category-btn" data-category="qualidade">Qualidade</button>
+                <button class="category-btn" data-category="calibracao">Calibração</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>🔍 Busca rápida</h3>
+              <input id="searchInput" class="search-input" type="text" placeholder="Digite um tema..." />
+              <div id="searchResults" class="search-results"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
   </div>
 
   <script>
@@ -619,61 +627,54 @@
     const sendBtn = document.getElementById("sendBtn");
     const modeSelect = document.getElementById("modeSelect");
     const voiceBtn = document.getElementById("voiceBtn");
-    const tabBtns = document.querySelectorAll(".tab-btn");
+    const clearMemoryBtn = document.getElementById("clearMemoryBtn");
+    const memoryList = document.getElementById("memoryList");
     const searchInput = document.getElementById("searchInput");
     const searchResults = document.getElementById("searchResults");
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const sections = document.querySelectorAll(".section");
+    const categoryButtons = document.querySelectorAll(".category-btn");
+    const toolButtons = document.querySelectorAll(".tool-btn");
 
     const memoryKey = "verity3d_memory";
-    const categories = ["warping", "aderencia", "suporte", "temperatura", "velocidade", "filamento", "qualidade", "calibracao"];
 
-    // Base de conhecimento expandida
     const knowledgeBase = {
-      "warping": {
-        keywords: ["warping", "empenamento", "empenar", "enrugado", "torto"],
-        answer: "WARPING / EMPENAMENTO\n\nO que é: Bordas da peça ficam empenadas para cima.\n\nCausas principais:\n- Mesa muito fria\n- Ventilação excessiva\n- Diferença de temperatura\n- Material de baixa qualidade\n\nSoluções:\n▪ Aumente temperatura da mesa:\n  PLA: 50-60°C → tente 65°C\n  ABS: 80-100°C\n  PETG: 70-80°C\n\n▪ Reduza ventilação nas primeiras camadas\n▪ Use brim ou raft para maior aderência\n▪ Certifique-se de mesa nivelada\n▪ Aplique adesivo (stick glue) na mesa\n\nDica Pro: Desligue o ventilador nos primeiros 5mm de altura."
+      warping: {
+        keywords: ["warping", "empenamento", "empenar", "borda torcida"],
+        answer: "WARPING / EMPENAMENTO\n\nO que é: as bordas da peça ficam levantadas.\n\nCausas:\n- Mesa fria\n- Ventilação excessiva\n- Temperatura desequilibrada\n- Falta de aderência\n\nSoluções:\n- Aqueça a mesa em PLA: 50-60°C\n- Reduza ventilação nas primeiras camadas\n- Use brim ou raft\n- Nivele a mesa\n- Aumente a aderência com cola ou filme\n\nDica: desligue a ventoinha nas primeiras camadas para reduzir empenamento."
       },
-      "aderencia": {
-        keywords: ["aderência", "aderencia", "adesão", "não colando", "nao cola", "descolando", "soltando"],
-        answer: "ADERÊNCIA DA PRIMEIRA CAMADA\n\nProblema: Modelo não gruda na mesa.\n\nChecklist de verificação:\n✓ Mesa nivelada (papel passa com resistência)\n✓ Mesa limpa com álcool 70%\n✓ Nozzle não muito alto\n✓ Temperatura adequada\n✓ Velocidade reduzida na primeira camada\n\nTemperaturas recomendadas:\nPLA: 50-60°C (mesa), 200-210°C (nozzle)\nABS: 80-100°C (mesa), 230-250°C (nozzle)\nPETG: 70-80°C (mesa), 230-250°C (nozzle)\n\nSoluções rápidas:\n1. Desça o nozzle 0.1mm\n2. Aumente temperatura da mesa 5-10°C\n3. Reduza velocidade primeira camada: 15-25 mm/s\n4. Use primer ou cola na mesa\n5. Limpe bem a superfície\n\nMateriais para mesa:\n- Vidro + stick glue\n- Cama magnética + spring steel\n- PEI + álcool\n- Textured glass"
+      aderencia: {
+        keywords: ["aderência", "aderencia", "adesão", "nao cola", "não colando", "descola"],
+        answer: "ADERÊNCIA DA PRIMEIRA CAMADA\n\nProblemas comuns:\n- Mesa desregulada\n- Mesa suja\n- Temperatura inadequada\n- Velocidade alta\n\nChecklist:\n- Nivele a mesa\n- Limpe bem a superfície\n- Reduza velocidade da primeira camada para 15-25 mm/s\n- Aumente 5°C a mesa\n- Use brim, cola ou PEI se necessário\n\nPLA: 50-60°C na mesa. ABS: 80-100°C."
       },
-      "suporte": {
-        keywords: ["suporte", "suportes", "preciso de suporte", "onde colocar", "support"],
-        answer: "SUPORTES\n\nO que são: Estruturas temporárias que sustentam saliências.\n\nQuando usar:\n- Ângulos > 45° com horizontal\n- Saliências sem base\n- Detalhes pendurados\n- Furos virados para cima\n\nDensidade de suporte:\n- 10-15%: Fácil remoção, menos material\n- 20%: Padrão\n- 30%+: Mais estável (para saliências grandes)\n\nTipo de suporte:\n- Linear: Melhor para remover\n- Grid: Mais estável\n- Tree: Menos material (mais rápido)\n\nDicas importantes:\n✓ Aumentar espaçamento (gap) entre modelo e suporte\n✓ Orientar modelo para minimizar suportes\n✓ Usar diferentes densidades em áreas diferentes\n✓ Aumentar velocidade de suporte\n✓ Aumentar temperatura para melhor aderência\n\nFerramentas:\n- Cura (automático)\n- PrusaSlicer (automático e manual)\n- SuperSlicer (muito controle)\n- Meshmixer (pré-processamento)"
+      suporte: {
+        keywords: ["suporte", "suportes", "preciso de suporte"],
+        answer: "SUPORTES\n\nUse suporte quando houver:\n- Peças com saliências\n- Angulos acima de 45°\n- Detalhes pendurados\n\nDicas:\n- Use suporte apenas onde necessário\n- Ajuste densidade para 10-20%\n- Deixe espaçamento adequado\n- Oriente o modelo para reduzir suporte\n\nFerramentas: Cura, PrusaSlicer e SuperSlicer fazem isso automaticamente."
       },
-      "temperatura": {
-        keywords: ["temperatura", "quente", "frio", "temperatura bico", "temperatura mesa", "temp"],
-        answer: "GUIA DE TEMPERATURA\n\nTemperaturas por material:\n\n┌─ PLA (mais comum) ─────────┐\n│ Nozzle: 200-210°C         │\n│ Mesa: 50-60°C             │\n│ Ventilação: Ligada        │\n│ Velocidade: Normal        │\n└──────────────────────────┘\n\n┌─ ABS ──────────────���───────┐\n│ Nozzle: 230-250°C         │\n│ Mesa: 80-100°C            │\n│ Ventilação: OFF (primeiras camadas)\n│ Velocidade: 40-60 mm/s    │\n│ Requer: Resfriamento lento│\n└──────────────────────────┘\n\n┌─ PETG ─────────────────────┐\n│ Nozzle: 230-250°C         │\n│ Mesa: 70-80°C             │\n│ Ventilação: Baixa         │\n│ Velocidade: 50-70 mm/s    │\n└──────────────────────────┘\n\n┌─ TPU (Flexível) ───────────┐\n│ Nozzle: 210-230°C         │\n│ Mesa: 20-40°C             │\n│ Velocidade: 30-50 mm/s    │\n└──────────────────────────┘\n\nAjustes:\n- Se muito frágil: +5°C\n- Se ficar com fios: -5°C\n- Se derreter: -10°C\n- Se não sai bem: +5°C"
+      temperatura: {
+        keywords: ["temperatura", "quente", "frio", "mesa", "bico"],
+        answer: "TEMPERATURA\n\nPLA: 200-210°C no bico, 50-60°C na mesa\nABS: 230-250°C no bico, 80-100°C na mesa\nPETG: 230-250°C no bico, 70-80°C na mesa\nTPU: 210-230°C no bico, 20-40°C na mesa\n\nSe a peça está frágil, aumente 5°C.\nSe está derretendo ou com excesso de fios, reduza 5°C."
       },
-      "velocidade": {
-        keywords: ["velocidade", "rápido", "lento", "speed", "mm/s"],
-        answer: "VELOCIDADES DE IMPRESSÃO\n\nVelocidades recomendadas:\n\n┌─ Primeira camada ──────────┐\n│ Velocidade: 15-25 mm/s    │\n│ Crítico para aderência    │\n└──────────────────────────┘\n\n┌─ Contorno/Perímetro ───────┐\n│ Velocidade: 30-50 mm/s    │\n│ Afeta qualidade visual    │\n└──────────────────────────┘\n\n┌─ Preenchimento/Infill ─────┐\n│ Velocidade: 60-100 mm/s   │\n│ Pode ser mais rápido      │\n└──────────────────────────┘\n\n┌─ Viagem/Travel ────────────┐\n│ Velocidade: 150-200 mm/s  │\n│ Sem depositar filamento   │\n└──────────────────────────┘\n\nDicas:\n- Começar com 50 mm/s padrão\n- Aumentar 10 mm/s de cada vez\n- Mais rápido = mais calor necessário\n- Impressora rígida = velocidade maior possível\n- Se layers ruins: reduzir velocidade\n- Se fios: aumentar retração, não velocidade"
+      velocidade: {
+        keywords: ["velocidade", "mm/s", "rapido", "lento"],
+        answer: "VELOCIDADE\n\nPrimeira camada: 15-25 mm/s\nContorno: 30-50 mm/s\nInfill: 60-100 mm/s\n\nSe houver falhas ou camada fraca, reduza velocidade.\nSe a peça está boa, você pode aumentar devagar em pequenos passos."
       },
-      "filamento": {
-        keywords: ["filamento", "pla", "abs", "petg", "tpu", "material", "qual filamento", "tipo"],
-        answer: "COMPARAÇÃO DE FILAMENTOS\n\n📍 PLA (Ácido Polilático)\nPros:\n✓ Fácil de imprimir\n✓ Biodegradável\n✓ Cores vibrantes\n✓ Baixa temperatura\n✓ Ideal para iniciantes\n\nContras:\n✗ Frágil\n✗ Deforma com calor\n✗ Warping possível\n\n⚙️ ABS (Acrilonitrila Butadieno Estireno)\nPros:\n✓ Muito resistente\n✓ Flexível\n✓ Aguenta calor\n✓ Acabamento acetona\n\nContras:\n✗ Difícil de imprimir\n✗ Requer mesa quente\n✗ Odor forte\n✗ Warping alto\n\n🔷 PETG\nPros:\n✓ Balanço PLA+ABS\n✓ Resistente\n✓ Fácil imprimir\n✓ Mais forte que PLA\n\nContras:\n✗ Temperatura alta\n✗ Mais caro\n\n🌊 TPU (Termoplástico Poliuretano)\nPros:\n✓ Super flexível\n✓ Durável\n✓ Macio\n\nContras:\n✗ Lento para imprimir\n✗ Difícil de remover suporte\n✗ Requer tuning fino\n\nDICA: Iniciantes = PLA. Peças resistentes = PETG."
+      filamento: {
+        keywords: ["filamento", "pla", "abs", "petg", "tpu", "material"],
+        answer: "FILAMENTOS\n\nPLA: Fácil de usar, bom para iniciantes\nABS: mais resistente, mas mais difícil\nPETG: bom equilíbrio entre resistência e facilidade\nTPU: flexível e elástico\n\nRecomendação: para começar, PLA é o melhor."
       },
-      "qualidade": {
-        keywords: ["qualidade", "ruim", "feio", "não fica bom", "impression ruim", "acabamento"],
-        answer: "MELHORAR QUALIDADE\n\nChecklist Visual:\n✓ Primeira camada perfeitamente aderida\n✓ Sem fios (strings) entre camadas\n✓ Sem buracos ou falhas\n✓ Superfície lisa\n✓ Camadas uniformes\n✓ Cantos bem definidos\n\nProblemas e soluções:\n\n❌ FIOS/STRINGS\nCausas: Retração baixa, temperatura alta\nSolução:\n- Aumentar retração: 5-7mm (FDM)\n- Reduzir temperatura: -5°C\n- Aumentar velocidade de viagem\n\n❌ BURACOS\nCausas: Infill baixo, velocidade alta\nSolução:\n- Aumentar infill: 15-20%\n- Reduzir velocidade\n- Verificar extrusora\n\n❌ SUPERFÍCIE ÁSPERA\nCausas: Temperatura baixa, velocidade alta\nSolução:\n- Aumentar temperatura: +5°C\n- Reduzir velocidade de contorno\n- Usar wall loops extra\n\n❌ DELAMINAÇÃO\nCausas: Temperatura baixa, resfriamento rápido\nSolução:\n1. Primeiro: Aumentar temperatura +5°C\n2. Depois: Reduzir velocidade\n3. Desligar ventilação\n\n❌ UNDERFILL\nCausas: Problema no fluxo ou extrusora\nSolução:\n- Verificar calibração de E-steps\n- Aumentar multiplicador de fluxo\n- Limpar nozzle e hot-end"
+      qualidade: {
+        keywords: ["qualidade", "feio", "ruim", "acabamento"],
+        answer: "QUALIDADE\n\nProblemas comuns:\n- Strings: reduza temperatura e aumente retração\n- Fios: ajuste retração\n- Buracos: aumente infill\n- Superfície áspera: reduza velocidade\n- Delaminação: aumente temperatura e reduza ventilação\n\nUse camada de 0.2mm para equilíbrio entre qualidade e velocidade."
       },
-      "calibracao": {
-        keywords: ["calibração", "calibracao", "calibrar", "ajuste", "tuning"],
-        answer: "CALIBRAÇÃO COMPLETA\n\n1️⃣ NÍVEL DA MESA (Leveling)\n- Usar papel ou calibrador\n- Passar com leve resistência\n- Testar 9 pontos (ou automático)\n- Refazer a cada 10-20 impressões\n\n2️⃣ ALTURA Z (Z-Offset)\n- Depois que nivelar\n- Ajustar durante primeira camada\n- Descer se não aderir\n- Subir se começar a raspar\n\n3️⃣ E-STEPS (Calibração de Fluxo)\nProcedimento:\n1. Marcar filamento a 120mm do nozzle\n2. Extrudar 100mm\n3. Medir quantos mm saiu realmente\n4. Ajustar: (E_steps_atual × 100) / mm_extrude\n\n4️⃣ TOWER DE TEMPERATURA\nProcedimento:\n1. Imprimir tower: 190°C até 220°C\n2. Ver qual zona ficou melhor\n3. Usar aquela temperatura\n\n5️⃣ TESTE DE RETRAÇÃO\nProcedimento:\n1. Imprimir \"retraction tower\"\n2. Aumentar retração de 2-8mm\n3. Ver qual teve menos strings\n\n6️⃣ XY OFFSET (Babystepping)\n- Só durante impressão se necessário\n- Ajustar ±0.05mm\n\nFREQUÊNCIA DE CALIBRAÇÃO:\n- E-steps: Uma vez por modelo de impressora\n- Leveling: A cada 10-20 impressões\n- Z-offset: Conforme necessário\n- Temperatura: Novos filamentos\n- Retração: Novos materiais"
+      calibracao: {
+        keywords: ["calibração", "calibracao", "calibrar", "nive"],
+        answer: "CALIBRAÇÃO\n\nChecklist importante:\n- Nível da mesa\n- Altura Z correta\n- Extrusão consistente\n- Temperatura ideal\n- Teste da primeira camada\n\nFaça uma calibragem simples: teste da primeira camada, leve pressão do papel e ajuste Z."
       }
     };
 
-    // Tabs
-    tabBtns.forEach(btn => {
-      btn.addEventListener("click", () => {
-        tabBtns.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        
-        document.querySelectorAll(".tab-content").forEach(tc => tc.classList.remove("active"));
-        document.querySelector(`[data-tab="${btn.dataset.tab}"]`).classList.add("active");
-      });
-    });
+    const memoryLimit = 50;
 
-    // Memory Functions
     function loadMemory() {
       const raw = localStorage.getItem(memoryKey);
       if (!raw) return [];
@@ -684,240 +685,230 @@
       }
     }
 
-    function saveMemory(data) {
-      localStorage.setItem(memoryKey, JSON.stringify(data));
+    function saveMemory(list) {
+      localStorage.setItem(memoryKey, JSON.stringify(list));
     }
 
     function updateMemoryDisplay() {
-      const memory = loadMemory();
-      const memoryList = document.getElementById("memoryList");
-      
-      if (memory.length === 0) {
-        memoryList.innerHTML = '<p style="color: var(--muted);">Nenhuma conversa registrada ainda.</p>';
+      const memories = loadMemory();
+      if (!memories.length) {
+        memoryList.innerHTML = '<div class="memory-item"><strong>Nenhuma conversa ainda.</strong><small>Faça sua primeira pergunta.</small></div>';
         return;
       }
 
-      memoryList.innerHTML = memory.slice(-10).reverse().map(m => `
-        <div class="memory-item">
-          <strong>${m.mode}:</strong> ${m.question.substring(0, 50)}...
-        </div>
-      `).join("");
+      memoryList.innerHTML = memories.slice(-12).reverse().map(item => {
+        const question = item.question.length > 70 ? item.question.slice(0, 70) + '...' : item.question;
+        return `
+          <div class="memory-item">
+            <strong>${item.mode}</strong><br>
+            ${question}<br>
+            <small>${new Date(item.time).toLocaleString('pt-BR')}</small>
+          </div>
+        `;
+      }).join('');
     }
 
-    function clearMemory() {
-      if (confirm("Tem certeza? Isso vai apagar todo o histórico.")) {
-        localStorage.removeItem(memoryKey);
-        updateMemoryDisplay();
-        alert("Memória limpa!");
-      }
-    }
-
-    // Message Functions
-    function addMessage(text, sender = "bot") {
-      const div = document.createElement("div");
+    function addMessage(text, sender = 'bot') {
+      const div = document.createElement('div');
       div.className = `message ${sender}`;
-      const senderText = sender === "bot" ? "Verity 3D:" : "Você:";
-      div.innerHTML = `<strong>${senderText}</strong><p>${text}</p>`;
+      div.innerHTML = `<strong>${sender === 'bot' ? 'Verity 3D:' : 'Você:'}</strong><p>${text}</p>`;
       messagesEl.appendChild(div);
       messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
-    // Search Knowledge
-    function searchKnowledge(question) {
-      const cleanQuestion = question.toLowerCase();
-      
-      for (const [topic, data] of Object.entries(knowledgeBase)) {
-        for (const keyword of data.keywords) {
-          if (cleanQuestion.includes(keyword)) {
-            return data.answer;
-          }
-        }
+    function getKnowledgeAnswer(question) {
+      const q = question.toLowerCase();
+      for (const [key, value] of Object.entries(knowledgeBase)) {
+        const found = value.keywords.some(keyword => q.includes(keyword.toLowerCase()));
+        if (found) return value.answer;
       }
-      
       return null;
     }
 
-    // Response Functions
-    function answerInteligencia(question) {
-      const knowledgeAnswer = searchKnowledge(question);
-      
-      if (knowledgeAnswer) {
-        return `📖 ANÁLISE DETALHADA\n\nPergunta: ${question}\n\n${knowledgeAnswer}`;
-      }
-      
-      return `📖 ANÁLISE DETALHADA\n\nPergunta: ${question}\n\nSua pergunta é sobre impressão 3D. Recomendações gerais:\n\n✓ Verificar temperatura (bico e mesa)\n✓ Nivelar a mesa corretamente\n✓ Usar velocidade apropriada (50-70 mm/s)\n✓ Verificar aderência da primeira camada\n✓ Testar com redução de velocidade\n\nSe o problema persistir, tente aumentar temperatura em 5°C ou reduzir velocidade.`;
+    function answerRapido(question) {
+      const hit = getKnowledgeAnswer(question);
+      if (hit) return `⚡ RESPOSTA RÁPIDA\n\n${hit}`;
+      return `⚡ RESPOSTA RÁPIDA\n\nSua pergunta parece estar relacionada a impressão 3D. Recomendo verificar:\n- temperatura da mesa e do bico\n- nível da mesa\n- velocidade da primeira camada\n- aderência do material\n\nSe o problema for persistente, reduza velocidade e teste em peça pequena.`;
     }
 
-    function answerRapido(question) {
-      const knowledgeAnswer = searchKnowledge(question);
-      
-      if (knowledgeAnswer) {
-        return `⚡ RESPOSTA RÁPIDA\n\n${knowledgeAnswer}`;
-      }
-      
-      return `⚡ RESPOSTA RÁPIDA\n\nAjuste: temperatura, mesa, velocidade e aderência da primeira camada.\n\nSe continuar: reduza velocidade de 50 para 30 mm/s.`;
+    function answerInteligencia(question) {
+      const hit = getKnowledgeAnswer(question);
+      if (hit) return `🧠 INTELIGÊNCIA\n\nPergunta: ${question}\n\n${hit}`;
+      return `🧠 INTELIGÊNCIA\n\nPergunta: ${question}\n\nA melhor abordagem é: verificar primeiro a aderência da primeira camada, depois temperatura e velocidade. Misturas de temperatura e ventoinha costumam causar muitos problemas.`;
     }
 
     function answerPesquisa(question) {
-      const knowledgeAnswer = searchKnowledge(question);
-      
-      if (knowledgeAnswer) {
-        return `🔍 PESQUISA E DADOS\n\nPergunta: ${question}\n\n${knowledgeAnswer}\n\n━━━━━━━━━━━━━━━━\nTópicos relacionados: Consulte as categorias para mais informações.`;
-      }
-      
-      return `🔍 PESQUISA E DADOS\n\nTópicos relacionados a sua pergunta:\n- Calibração\n- Temperatura\n- Velocidade\n- Qualidade\n\nConsulte a aba "Categorias" para explorar.`;
+      const hit = getKnowledgeAnswer(question);
+      if (hit) return `🔍 PESQUISA\n\nPergunta: ${question}\n\n${hit}`;
+      return `🔍 PESQUISA\n\nSua pergunta parece de impressão 3D. Tópicos úteis:\n- Temperatura\n- Velocidade\n- Aderência\n- Warping\n- Calibração\n\nUse as categorias para aprofundar.`;
     }
 
     function getBotResponse(question, mode) {
-      const lowercase = (mode || "rapido").toLowerCase();
-
-      if (lowercase === "inteligencia") return answerInteligencia(question);
-      if (lowercase === "pesquisa") return answerPesquisa(question);
-
+      if (mode === 'inteligencia') return answerInteligencia(question);
+      if (mode === 'pesquisa') return answerPesquisa(question);
       return answerRapido(question);
     }
 
-    function saveToMemory(question, answer, mode) {
-      const memory = loadMemory();
-      memory.push({ question, answer, mode, time: new Date().toISOString() });
-      if (memory.length > 50) {
-        memory.splice(0, memory.length - 50);
-      }
-      saveMemory(memory);
+    function saveEntry(question, answer, mode) {
+      const list = loadMemory();
+      list.push({ question, answer, mode, time: Date.now() });
+      if (list.length > memoryLimit) list.splice(0, list.length - memoryLimit);
+      saveMemory(list);
       updateMemoryDisplay();
     }
 
-    // Command Functions
-    function runCommand(command) {
-      const base = {
-        analisar_modelo: {
-          status: "✓ Analisado",
-          warnings: ["Verificar espessura de parede", "Checar saliências", "Validar aderência"],
-          suggestion: "Ajuste orientação antes da impressão"
-        },
-        otimizar_para_impressao: {
-          status: "✓ Otimizado",
-          material: "PLA",
-          settings: ["Temp nozzle: 210°C", "Temp mesa: 60°C", "Layer: 0.2mm", "Velocidade: 60 mm/s"]
-        },
-        gerar_suportes: {
-          status: "✓ Suportes gerados",
-          density: "15%",
-          note: "Verifique remoção sem danificar"
-        },
-        estimar_tempo: {
-          status: "✓ Estimado",
-          hours: 4.2,
-          weight_grams: 45,
-          cost_estimate: "R$ 8-12"
-        }
-      };
-
-      if (!base[command]) {
-        return "⚠️ Comando não reconhecido.";
-      }
-
-      return JSON.stringify(base[command], null, 2);
-    }
-
-    // Send Message
     function sendQuestion() {
       const question = questionInput.value.trim();
       if (!question) return;
 
-      addMessage(question, "user");
-      questionInput.value = "";
+      addMessage(question, 'user');
+      questionInput.value = '';
 
-      const mode = modeSelect.value || "rapido";
+      const mode = modeSelect.value;
       const answer = getBotResponse(question, mode);
 
       setTimeout(() => {
-        addMessage(answer, "bot");
-        saveToMemory(question, answer, mode);
-      }, 300);
+        addMessage(answer, 'bot');
+        saveEntry(question, answer, mode);
+      }, 200);
     }
 
-    // Load Category
-    function loadCategory(category) {
+    function clearMemory() {
+      if (!confirm('Deseja limpar o histórico de conversas?')) return;
+      localStorage.removeItem(memoryKey);
+      updateMemoryDisplay();
+    }
+
+    function runQuickCommand(cmd) {
+      const map = {
+        analisar_modelo: {
+          status: 'Analisado',
+          warnings: ['Verificar espessura da parede', 'Checar saliências', 'Validar aderência'],
+          suggestion: 'Ajuste a orientação antes de imprimir'
+        },
+        otimizar_para_impressao: {
+          status: 'Otimizado',
+          material: 'PLA',
+          settings: ['Temp Bico: 205°C', 'Temp Mesa: 60°C', 'Camada: 0.2mm']
+        },
+        gerar_suportes: {
+          status: 'Suportes gerados',
+          density: '15%',
+          note: 'Verifique a remoção sem danificar a peça'
+        },
+        estimar_tempo: {
+          status: 'Tempo estimado',
+          hours: 4.2,
+          minutes: 252,
+          confidence: 'média'
+        }
+      };
+
+      if (!map[cmd]) return 'Comando não reconhecido.';
+      return JSON.stringify(map[cmd], null, 2);
+    }
+
+    function switchSection(target) {
+      navButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.target === target));
+      sections.forEach(sec => sec.classList.toggle('active', sec.id === `${target}Section`));
+    }
+
+    function showCategory(category) {
       const data = knowledgeBase[category];
-      if (data) {
-        addMessage(data.answer, "bot");
-        saveToMemory(`Categoria: ${category}`, data.answer, "categoria");
-      }
+      if (!data) return;
+      addMessage(`${data.answer}`, 'bot');
+      saveEntry(`Categoria: ${category}`, data.answer, 'categoria');
     }
 
-    // Search
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase();
-      if (query.length < 2) {
-        searchResults.innerHTML = "";
+    function renderSearchResults(query) {
+      if (!query) {
+        searchResults.innerHTML = '';
         return;
       }
 
-      const results = [];
-      for (const [topic, data] of Object.entries(knowledgeBase)) {
-        if (topic.includes(query) || data.keywords.some(k => k.includes(query))) {
-          results.push(topic);
-        }
+      const items = Object.keys(knowledgeBase)
+        .filter(key => key.toLowerCase().includes(query.toLowerCase()) || knowledgeBase[key].keywords.some(k => k.toLowerCase().includes(query.toLowerCase())))
+        .slice(0, 6);
+
+      if (!items.length) {
+        searchResults.innerHTML = '<div class="search-result">Nenhum resultado encontrado.</div>';
+        return;
       }
 
-      searchResults.innerHTML = results.map(r => `
-        <div class="search-result" onclick="loadCategory('${r}')">${r.toUpperCase()}</div>
-      `).join("");
+      searchResults.innerHTML = items.map(item => `
+        <div class="search-result" data-key="${item}">${item.toUpperCase()}</div>
+      `).join('');
+
+      searchResults.querySelectorAll('.search-result').forEach(el => {
+        el.addEventListener('click', () => {
+          const key = el.dataset.key;
+          showCategory(key);
+        });
+      });
+    }
+
+    function startWelcome() {
+      const msg = [
+        'Olá! 👋 Sou a Verity 3D.',
+        'Posso ajudar com impressão 3D, aderência, temperatura, suporte, velocidade, qualidade, warping e calibração.',
+        '',
+        'Escolha um modo e faça sua pergunta.',
+        'Você também pode usar a aba Categorias para explorar temas ou clicar no botão Voz para falar.'
+      ].join('\n');
+      addMessage(msg, 'bot');
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => switchSection(btn.dataset.target));
     });
 
-    // Voice
-    voiceBtn.addEventListener("click", () => {
-      if (!("webkitSpeechRecognition" in window)) {
-        alert("Seu navegador não suporta reconhecimento de voz.");
+    categoryButtons.forEach(btn => {
+      btn.addEventListener('click', () => showCategory(btn.dataset.category));
+    });
+
+    toolButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const result = runQuickCommand(btn.dataset.cmd);
+        addMessage(result, 'bot');
+        saveEntry(`Comando: ${btn.dataset.cmd}`, result, 'automacao');
+      });
+    });
+
+    sendBtn.addEventListener('click', sendQuestion);
+    questionInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') sendQuestion();
+    });
+
+    searchInput.addEventListener('input', e => renderSearchResults(e.target.value.trim()));
+    clearMemoryBtn.addEventListener('click', clearMemory);
+
+    voiceBtn.addEventListener('click', () => {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('Seu navegador não suporta reconhecimento de voz.');
         return;
       }
 
-      const recognition = new webkitSpeechRecognition();
-      recognition.lang = "pt-BR";
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'pt-BR';
       recognition.start();
-      voiceBtn.textContent = "🎤 Ouvindo...";
+      voiceBtn.textContent = '🎤 Ouvindo...';
 
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         questionInput.value = transcript;
-        voiceBtn.textContent = "🎤 Voz";
+        voiceBtn.textContent = '🎤 Voz';
         sendQuestion();
       };
 
       recognition.onerror = () => {
-        voiceBtn.textContent = "🎤 Voz";
-        alert("Erro ao reconhecer fala.");
+        voiceBtn.textContent = '🎤 Voz';
+        alert('Não foi possível captar sua voz. Tente novamente.');
       };
     });
 
-    // Event Listeners
-    sendBtn.addEventListener("click", sendQuestion);
-
-    questionInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        sendQuestion();
-      }
-    });
-
-    document.querySelectorAll(".tool-btn").forEach(button => {
-      button.addEventListener("click", () => {
-        const cmd = button.dataset.cmd;
-        const result = runCommand(cmd);
-        addMessage(result, "bot");
-        saveToMemory(`Comando: ${cmd}`, result, "automacao");
-      });
-    });
-
-    // Welcome
-    function startWelcome() {
-      const welcome = "👋 Bem-vindo à Verity 3D v2.0!\n\nSou uma IA avançada para impressão 3D com:\n✓ Memória de conversa\n✓ 3 modos: Rápido, Inteligência, Pesquisa\n✓ Base de dados completa sobre 3D\n✓ Reconhecimento de voz\n✓ Histórico de conversas\n\nEscolha um modo e faça sua pergunta sobre:\n- Warping/Empenamento\n- Aderência\n- Suportes\n- Temperatura\n- Velocidade\n- Filamentos\n- Qualidade\n- Calibração\n\nOu explore as abas acima! 🚀";
-
-      addMessage(welcome, "bot");
-    }
-
-    startWelcome();
     updateMemoryDisplay();
+    startWelcome();
   </script>
 </body>
 </html>
